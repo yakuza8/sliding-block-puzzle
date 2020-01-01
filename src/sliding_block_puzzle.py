@@ -1,6 +1,7 @@
-import argparse
 from typing import List, Tuple, Union
+from collections import defaultdict
 
+import argparse
 import src.heuristic_functions as hf
 import src.file_parser as fp
 import src.state_transitions as st
@@ -59,18 +60,19 @@ class Puzzle(object):
         # Initial start node
         start_node = Node(self.initial_state, None, self.INITIAL_G_VALUE,
                           self._find_minimum_heuristic_among_final_states(self.initial_state))
-        # Open and closed lists
-        open_list = [start_node]
-        closed_list = []
+        # Open and closed lists (Optimization is done via hashing first row summation of nodes)
+        open_list = defaultdict(list)
+        Puzzle._add_node_open_closed_list(start_node, open_list)
+        closed_list = defaultdict(list)
 
         # Loop until open_list gets empty
-        while open_list:
-            current_node_index = Puzzle._find_minimum_f_valued_node(open_list)
-            current_node = open_list.pop(current_node_index)
+        while any(map(lambda x: bool(x), open_list.values())):
+            current_node_dict_index, current_node_index = Puzzle._find_minimum_f_valued_node(open_list)
+            current_node = open_list[current_node_dict_index].pop(current_node_index)
 
             # If it does not exist in closed_list, then put it there
-            if Puzzle._check_is_node_in_node_list(current_node.state, closed_list)[0]:
-                closed_list.append(current_node)
+            if not Puzzle._check_is_node_in_node_list(current_node.state, closed_list)[0]:
+                Puzzle._add_node_open_closed_list(current_node, closed_list)
 
             # If one of the final nodes is reached, then return solution
             if Puzzle._check_is_node_in_target_state_list(current_node.state, self.final_states):
@@ -89,9 +91,10 @@ class Puzzle(object):
                     is_in_closed_list, closed_node = Puzzle._check_is_node_in_node_list(child_state, closed_list)
 
                     if not is_in_open_list and not is_in_closed_list:
-                        open_list.append(
+                        Puzzle._add_node_open_closed_list(
                             Node(child_state, current_node, current_g_value,
-                                 self._find_minimum_heuristic_among_final_states(child_state) + current_g_value)
+                                 self._find_minimum_heuristic_among_final_states(child_state) + current_g_value),
+                            open_list
                         )
                     else:
                         if is_in_open_list:
@@ -100,8 +103,8 @@ class Puzzle(object):
                         elif is_in_closed_list:
                             if closed_node.g_value > current_g_value:
                                 Puzzle._update_node(closed_node, current_node, current_g_value)
-                                closed_list.remove(closed_node)
-                                open_list.append(closed_node)
+                                Puzzle._remove_node_from_open_closed_list(closed_node, closed_list)
+                                Puzzle._add_node_open_closed_list(closed_node, open_list)
                         else:
                             print("Error: A node should not be found in both open and closed list")
 
@@ -119,24 +122,46 @@ class Puzzle(object):
         return min(heuristic_value_list)
 
     @staticmethod
-    def _find_minimum_f_valued_node(open_list: List[Node]) -> int:
+    def _add_node_open_closed_list(node_to_add: Node, open_or_closed_list: defaultdict):
+        """
+        Optimization related adding to open or closed lists
+        Nodes are added by looking at the hash which is computed by the summation
+        of first row of node's state
+        """
+        open_or_closed_list[sum(node_to_add.state[0])].append(node_to_add)
+
+    @staticmethod
+    def _remove_node_from_open_closed_list(node_to_remove: Node, open_or_closed_list: defaultdict):
+        """
+        Optimization related removal from open or closed list
+        Nodes are added by looking at the hash which is computed by the summation
+        of first row of node's state
+        """
+        open_or_closed_list[sum(node_to_remove.state[0])].remove(node_to_remove)
+
+    @staticmethod
+    def _find_minimum_f_valued_node(open_list: defaultdict) -> Tuple[int, int]:
         """
         Finding minimum f-valued state in open states
         """
-        minimum_index = 0
-        minimum_f_value = open_list[0].f_value
-        for index, open_node_from_list in enumerate(open_list):
-            if open_node_from_list.f_value < minimum_f_value:
-                minimum_index = index
-                minimum_f_value = open_node_from_list.f_value
-        return minimum_index
+        minimum_index_key = -1
+        minimum_index = -1
+        minimum_f_value = 1e10  # Pretty large number
+        for key, hash_list in open_list.items():
+            for index, open_node_from_list in enumerate(hash_list):
+                if open_node_from_list.f_value < minimum_f_value:
+                    minimum_index_key = key
+                    minimum_index = index
+                    minimum_f_value = open_node_from_list.f_value
+        return minimum_index_key, minimum_index
 
     @staticmethod
-    def _check_is_node_in_node_list(state: List[List[int]], closed_state_list: List[Node])\
+    def _check_is_node_in_node_list(state: List[List[int]], closed_state_list_dict: defaultdict)\
             -> Union[Tuple[bool, Node], Tuple[bool, None]]:
         """
         Check whether the given node is in the closed states
         """
+        closed_state_list = closed_state_list_dict[sum(state[0])]
         for closed_node in closed_state_list:
             if state == closed_node.state:
                 return True, closed_node
@@ -206,7 +231,10 @@ if __name__ == '__main__':
 
     # Solve puzzle
     solution_exists, solution_path = puzzle.solve()
-    for node in solution_path:
-        for row in node.state:
-            print(row)
-        print()
+    if solution_exists:
+        for node in solution_path:
+            for row in node.state:
+                print(row)
+            print()
+    else:
+        print("Solution does not exist.")
