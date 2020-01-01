@@ -3,7 +3,6 @@
     "row": 5,
     "column": 5,
     "blocks": 4,
-    "final_state_count": 1,
     "start_state": [
         [4, 4, 4, 0, 0],
         [0, 0, 1, 1, 0],
