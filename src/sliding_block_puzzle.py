@@ -69,7 +69,7 @@ class Puzzle(object):
             current_node = open_list.pop(current_node_index)
 
             # If it does not exist in closed_list, then put it there
-            if Puzzle._check_is_node_in_node_list(current_node.state, closed_list)[0]:
+            if not Puzzle._check_is_node_in_node_list(current_node.state, closed_list)[0]:
                 closed_list.append(current_node)
 
             # If one of the final nodes is reached, then return solution
@@ -206,7 +206,10 @@ if __name__ == '__main__':
 
     # Solve puzzle
     solution_exists, solution_path = puzzle.solve()
-    for node in solution_path:
-        for row in node.state:
-            print(row)
-        print()
+    if solution_exists:
+        for node in solution_path:
+            for row in node.state:
+                print(row)
+            print()
+    else:
+        print("Solution does not exist.")
