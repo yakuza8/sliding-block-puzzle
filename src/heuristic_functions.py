@@ -1,7 +1,8 @@
 from enum import Enum
 from typing import Callable, Dict, List
-from .sliding_block_puzzle import EMPTY_CELL_BLOCK
 import unittest
+
+import src as common
 
 
 class Heuristics(Enum):
@@ -79,10 +80,10 @@ def _state_traverser(first_state: List[List[int]], second_state: List[List[int]]
         column_index = 0
         for first_block, second_block in zip(first_row, second_row):
             # Put first block if it does not exist
-            if first_block != EMPTY_CELL_BLOCK and first_block not in first_state_piece_coordinate_dict:
+            if first_block != common.EMPTY_CELL_BLOCK and first_block not in first_state_piece_coordinate_dict:
                 first_state_piece_coordinate_dict[first_block] = (row_index, column_index)
             # Put first block if it does not exist
-            if second_block != EMPTY_CELL_BLOCK and second_block not in second_state_piece_coordinate_dict:
+            if second_block != common.EMPTY_CELL_BLOCK and second_block not in second_state_piece_coordinate_dict:
                 second_state_piece_coordinate_dict[second_block] = (row_index, column_index)
             # Update column index
             column_index += 1

@@ -1,5 +1,4 @@
 from typing import List, TextIO
-from .sliding_block_puzzle import Puzzle
 
 
 class PuzzleInputParser(object):
@@ -24,20 +23,22 @@ class PuzzleInputParser(object):
 
     @staticmethod
     def parse_dict_formatted_file(f: TextIO):
+        from src.sliding_block_puzzle import Puzzle
         puzzle = eval(f.read())
 
         heuristic = puzzle[PuzzleInputParser.HEURISTIC_LABEL]
-        row = puzzle[PuzzleInputParser.ROW_LABEL],
+        row = puzzle[PuzzleInputParser.ROW_LABEL]
         column = puzzle[PuzzleInputParser.COLUMN_LABEL]
         blocks = puzzle[PuzzleInputParser.BLOCKS_LABEL]
         initial_state = puzzle[PuzzleInputParser.INITIAL_STATE_LABEL]
         final_states = puzzle[PuzzleInputParser.FINAL_STATES_LABEL]
 
-        PuzzleInputParser._validate_inputs()
+        PuzzleInputParser._validate_inputs(row, column, blocks, initial_state, final_states)
         return Puzzle(heuristic, row, column, blocks, initial_state, final_states)
 
     @staticmethod
     def parse_plain_formatted_file(f: TextIO):
+        from src.sliding_block_puzzle import Puzzle
         # First line must represent heuristic function id
         heuristic = int(f.readline()[:-1])
         # Second line represents row count, column count, block count and final state count respectively
@@ -55,5 +56,5 @@ class PuzzleInputParser(object):
         initial_state = states[0]
         final_states = states[1:]
 
-        PuzzleInputParser._validate_inputs()
+        PuzzleInputParser._validate_inputs(row, column, blocks, initial_state, final_states)
         return Puzzle(heuristic, row, column, blocks, initial_state, final_states)

@@ -1,6 +1,7 @@
 from typing import List, Union
-from .sliding_block_puzzle import EMPTY_CELL_BLOCK
 import unittest
+
+import src as common
 
 """
 Straight forward functionality for sliding specific block once at a time
@@ -28,13 +29,13 @@ def slide_block_up(current_state: List[List[int]], rows: int, columns: int, bloc
                     return None
                 else:
                     # If it can move, then check upper cell
-                    if updated_state[i - 1][j] != EMPTY_CELL_BLOCK:
+                    if updated_state[i - 1][j] != common.EMPTY_CELL_BLOCK:
                         # If the upper cell is not empty then return None
                         return None
                     else:
                         # Otherwise move slide one block up and make its previous position empty
                         updated_state[i - 1][j] = block_to_slide
-                        updated_state[i][j] = EMPTY_CELL_BLOCK
+                        updated_state[i][j] = common.EMPTY_CELL_BLOCK
     return updated_state
 
 
@@ -51,13 +52,13 @@ def slide_block_down(current_state: List[List[int]], rows: int, columns: int, bl
                     return None
                 else:
                     # If it can move, then check bottom cell
-                    if updated_state[i + 1][j] != EMPTY_CELL_BLOCK:
+                    if updated_state[i + 1][j] != common.EMPTY_CELL_BLOCK:
                         # If the bottom cell is not empty then return None
                         return None
                     else:
                         # Otherwise move slide one block down and make its previous position empty
                         updated_state[i + 1][j] = block_to_slide
-                        updated_state[i][j] = EMPTY_CELL_BLOCK
+                        updated_state[i][j] = common.EMPTY_CELL_BLOCK
     return updated_state
 
 
@@ -74,13 +75,13 @@ def slide_block_left(current_state: List[List[int]], rows: int, columns: int, bl
                     return None
                 else:
                     # If it can move, then check left cell
-                    if updated_state[i][j - 1] != EMPTY_CELL_BLOCK:
+                    if updated_state[i][j - 1] != common.EMPTY_CELL_BLOCK:
                         # If the left cell is not empty then return None
                         return None
                     else:
                         # Otherwise move slide one block left and make its previous position empty
                         updated_state[i][j - 1] = block_to_slide
-                        updated_state[i][j] = EMPTY_CELL_BLOCK
+                        updated_state[i][j] = common.EMPTY_CELL_BLOCK
     return updated_state
 
 
@@ -97,13 +98,13 @@ def slide_block_right(current_state: List[List[int]], rows: int, columns: int, b
                     return None
                 else:
                     # If it can move, then check right cell
-                    if updated_state[i][j + 1] != EMPTY_CELL_BLOCK:
+                    if updated_state[i][j + 1] != common.EMPTY_CELL_BLOCK:
                         # If the right cell is not empty then return None
                         return None
                     else:
                         # Otherwise move slide one block right and make its previous position empty
                         updated_state[i][j + 1] = block_to_slide
-                        updated_state[i][j] = EMPTY_CELL_BLOCK
+                        updated_state[i][j] = common.EMPTY_CELL_BLOCK
     return updated_state
 
 

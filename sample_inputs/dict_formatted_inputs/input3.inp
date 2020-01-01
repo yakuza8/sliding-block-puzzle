@@ -1,7 +1,7 @@
 {
     "heuristic_function": 1,
     "row": 5,
-    "column" 5,
+    "column": 5,
     "blocks": 4,
     "final_state_count": 1,
     "start_state": [
