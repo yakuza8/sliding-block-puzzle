@@ -75,16 +75,16 @@ dimensions of inputs are done after reading inputs. You can refer the following 
 out how it is structure 
 
 ```
-0           # Heuristic function
-4 4 15 1    # Row, column, block counts and count of final states
-S           # Separator for initial state
-10 13 4 8   # Row 1 of initial state
-2 14 12 7   # Row 2 of initial state
-9 0 15 3    # Row 3 of initial state
-1 5 6 11    # Row 4 of initial state
-F           # Separator for final states
-1 2 3 4     # Row 1 of final state
-5 6 7 8     # Row 1 of final state
-9 10 11 12  # Row 1 of final state
-13 14 15 0  # Row 1 of final state
+0               # Heuristic function
+4 4 15 1        # Row, column, block counts and count of final states
+S               # Separator for initial state
+10 13 4 8       # Row 1 of initial state
+2 14 12 7       # Row 2 of initial state
+9 0 15 3        # Row 3 of initial state
+1 5 6 11        # Row 4 of initial state
+F               # Separator for final states
+1 2 3 4         # Row 1 of final state
+5 6 7 8         # Row 1 of final state
+9 10 11 12      # Row 1 of final state
+13 14 15 0      # Row 1 of final state
 ```
