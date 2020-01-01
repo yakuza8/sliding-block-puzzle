@@ -109,6 +109,10 @@ class Puzzle(object):
         return False, None
 
     def _find_minimum_heuristic_among_final_states(self, state: List[List[int]]) -> int:
+        """
+        Minimum heuristic finding procedure among final states where the minimum distance of the current state
+        to all final states are computed with respect to assigned heuristic function
+        """
         heuristic_value_list = []
         for final_state in self.final_states:
             heuristic_value_list.append(self.heuristic_function(state, final_state))
@@ -116,29 +120,16 @@ class Puzzle(object):
 
     @staticmethod
     def _find_minimum_f_valued_node(open_list: List[Node]) -> int:
+        """
+        Finding minimum f-valued state in open states
+        """
         minimum_index = 0
         minimum_f_value = open_list[0].f_value
-        for index, node in enumerate(open_list):
-            if node.f_value < minimum_f_value:
+        for index, open_node_from_list in enumerate(open_list):
+            if open_node_from_list.f_value < minimum_f_value:
                 minimum_index = index
-                minimum_f_value = node.f_value
+                minimum_f_value = open_node_from_list.f_value
         return minimum_index
-
-    @staticmethod
-    def _expand_node(node: Node, pieces: int, row: int, column: int) -> List[List[List[int]]]:
-        """
-        Expand the given node by applying state transitions
-        """
-        current_state = node.state
-        children = []
-        for block_to_slide in range(1, pieces + 1):
-            functions_to_be_applied = [st.slide_block_up, st.slide_block_down,
-                                       st.slide_block_left, st.slide_block_right]
-            for function in functions_to_be_applied:
-                expanded_node = function(current_state, row, column, block_to_slide)
-                if expanded_node is not None:
-                    children.append(expanded_node)
-        return children
 
     @staticmethod
     def _check_is_node_in_node_list(state: List[List[int]], closed_state_list: List[Node])\
@@ -162,7 +153,27 @@ class Puzzle(object):
         return False
 
     @staticmethod
+    def _expand_node(node_to_expand: Node, pieces: int, row_count: int, column_count: int) -> List[List[List[int]]]:
+        """
+        Expand the given node by applying state transitions
+        """
+        current_state = node_to_expand.state
+        children = []
+        for block_to_slide in range(1, pieces + 1):
+            # Functions to be applied where all the direction of sliding exist
+            functions_to_be_applied = [st.slide_block_up, st.slide_block_down,
+                                       st.slide_block_left, st.slide_block_right]
+            for function in functions_to_be_applied:
+                expanded_node = function(current_state, row_count, column_count, block_to_slide)
+                if expanded_node is not None:
+                    children.append(expanded_node)
+        return children
+
+    @staticmethod
     def _update_node(node_to_be_updated: Node, parent_node: Node, current_g_value: int):
+        """
+        Updating the given solution by changing its g value, parent node and f value
+        """
         g_value_difference = node_to_be_updated.g_value - current_g_value
         node_to_be_updated.parent = parent_node
         node_to_be_updated.g_value = current_g_value
@@ -170,6 +181,9 @@ class Puzzle(object):
 
     @staticmethod
     def _get_solution_path(final_node: Node) -> List[Node]:
+        """
+        Finding solution path via iterating parents until the start node
+        """
         solution_path_to_initial_node = []
         while final_node.parent is not None:
             solution_path_to_initial_node.insert(0, final_node)

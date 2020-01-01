@@ -2,6 +2,11 @@ from typing import List, TextIO
 
 
 class PuzzleInputParser(object):
+    """
+    Parser for puzzle state where two input types exist
+    1. Dictionary like formatted input
+    2. Plain text input format
+    """
 
     HEURISTIC_LABEL = 'heuristic_function'
     ROW_LABEL = 'row'
@@ -11,8 +16,8 @@ class PuzzleInputParser(object):
     FINAL_STATES_LABEL = 'final_states'
 
     @staticmethod
-    def _validate_inputs(row_count: int, column_count: int, blocks: int,
-                         initial_state: List[List[int]], final_states: List[List[List[int]]]):
+    def _validate_inputs(row_count: int, column_count: int, initial_state: List[List[int]],
+                         final_states: List[List[List[int]]]):
         all_states = [initial_state] + final_states
         for state in all_states:
             if len(state) != row_count:
@@ -33,7 +38,7 @@ class PuzzleInputParser(object):
         initial_state = puzzle[PuzzleInputParser.INITIAL_STATE_LABEL]
         final_states = puzzle[PuzzleInputParser.FINAL_STATES_LABEL]
 
-        PuzzleInputParser._validate_inputs(row, column, blocks, initial_state, final_states)
+        PuzzleInputParser._validate_inputs(row, column, initial_state, final_states)
         return Puzzle(heuristic, row, column, blocks, initial_state, final_states)
 
     @staticmethod
@@ -56,5 +61,5 @@ class PuzzleInputParser(object):
         initial_state = states[0]
         final_states = states[1:]
 
-        PuzzleInputParser._validate_inputs(row, column, blocks, initial_state, final_states)
+        PuzzleInputParser._validate_inputs(row, column, initial_state, final_states)
         return Puzzle(heuristic, row, column, blocks, initial_state, final_states)
