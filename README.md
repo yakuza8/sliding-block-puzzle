@@ -24,7 +24,7 @@ with **1**.
 Simply run sliding_block_puzzle.py as the following command
    
 ```commandline
-$ python3 sliding_block_puzzle.py -f ../sample_inputs/dict_formatted_inputs/input3.inp
+$ python3 -m src.sliding_block_puzzle -f ./sample_inputs/dict_formatted_inputs/input3.inp
 ```
 
 ## Input Format
